@@ -72,6 +72,7 @@ https://raw.githubusercontent.com/evanwy0223/evan-shadowrocket-config/main/Evan-
 | YouTube | `♻️ 自动选择` |
 | GitHub、GitLab、Atlassian、GitHub Copilot | `♻️ 自动选择` |
 | Telegram | `♻️ 自动选择` |
+| 京东及图片/CDN | `DIRECT` |
 | 微信、飞书、小红书、抖音、豆包 | `DIRECT` |
 | Apple、iCloud | `DIRECT` |
 | Apple Push | `♻️ 自动选择` |
@@ -117,7 +118,7 @@ X 使用独立的 `🐦 X 服务`，覆盖 `x.com`、`twitter.com`、`twimg.com`
 
 检查 `💬 国内核心` 是否为 `DIRECT`，并确认全局路由为「配置」。不要把整个 ByteDance 规则集设置为直连。
 
-京东 App 依赖 `dns.jd.com` 提供的自有 HttpDNS。配置已在 BlockHttpDNS 规则集之前为该域名增加直连例外；不要为了京东长期把整个 `🧱 DNS 防泄露` 切换为 `DIRECT`。
+京东 App 依赖 `dns.jd.com` 提供的自有 HttpDNS，并使用 `360buyimg.com`、`jdcdn.com`、`jcloudimg.com` 等图片/CDN域名。配置已在 BlockHttpDNS 和普通海外规则之前加入京东完整规则集，统一进入 `💬 国内核心 → DIRECT`；不要为了京东长期把整个 `🧱 DNS 防泄露` 切换为 `DIRECT`。
 
 ### 邮件客户端无法收发邮件
 
