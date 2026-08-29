@@ -68,6 +68,7 @@ https://raw.githubusercontent.com/evanwy0223/evan-shadowrocket-config/main/Evan-
 | ChatGPT、Claude、Grok、Perplexity | `🇺🇸 美国固定` |
 | Gemini、NotebookLM、Google AI Studio | `🇺🇸 美国固定` |
 | Google 普通服务 | `🇺🇸 美国自动` |
+| X / Twitter 及图片、视频 | `🇺🇸 美国固定` |
 | YouTube | `♻️ 自动选择` |
 | GitHub、GitLab、Atlassian、GitHub Copilot | `♻️ 自动选择` |
 | Telegram | `♻️ 自动选择` |
@@ -101,6 +102,12 @@ https://raw.githubusercontent.com/evanwy0223/evan-shadowrocket-config/main/Evan-
 ### AI 服务频繁验证或掉线
 
 进入 `🇺🇸 美国固定`，选择一个具体美国节点并保持使用。不要为了几十毫秒的延迟差异频繁更换出口 IP。
+
+### X / Twitter 图片加载慢
+
+X 使用独立的 `🐦 X 服务`，覆盖 `x.com`、`twitter.com`、`twimg.com`、视频域名和相关 IP，默认走 `🇺🇸 美国固定`。该选择来自实际线路测试：普通海外自动组选择香港节点时图片较慢，切换至美国 DMIT 节点后图片加载明显恢复。
+
+如果以后当前美国固定节点变慢，可在 `🐦 X 服务` 中依次测试 `🇺🇸 美国自动` 或 `PROXY`，无需改变整个 `🌍 非中国` 策略。
 
 ### 美国固定、香港固定或日本固定为空
 
