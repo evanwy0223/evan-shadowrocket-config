@@ -23,6 +23,31 @@ https://raw.githubusercontent.com/evanwy0223/evan-shadowrocket-config/main/Evan-
 
 也可以直接下载仓库中的 `Evan-Shadowrocket-v1.conf`，通过 iOS「文件」App 分享给 Shadowrocket 导入。
 
+## 配置订阅与自动更新
+
+配置内置以下更新地址，只跟随本仓库：
+
+```text
+https://raw.githubusercontent.com/evanwy0223/evan-shadowrocket-config/main/Evan-Shadowrocket-v1.conf
+```
+
+首次使用旧版或本地文件版配置时，需要最后一次通过上面的 Raw URL 重新导入，让 Shadowrocket 记录远程更新地址。以后不需要反复下载文件。
+
+手动更新：
+
+1. 打开 Shadowrocket 底部「配置」。
+2. 找到当前使用的 `Evan-Shadowrocket-v1.conf`。
+3. 进入配置详情并选择「更新配置」。
+
+自动更新：
+
+1. 打开 Shadowrocket「设置 → 订阅 → 自动更新」中的「配置」。
+2. 开启「自动后台更新」，更新间隔可设为 1 天。
+3. 建议开启「更新提醒」。
+4. 在 iOS「设置 → 通用 → 后台 App 刷新」中允许 Shadowrocket。
+
+配置更新会用 GitHub 上的完整文件覆盖手机中的配置内容。更新后请检查美国固定、香港固定和 Google 服务；节点订阅本身仍由机场订阅单独更新。
+
 ## 首次设置
 
 导入配置不会包含机场订阅或私人节点，需要先在 Shadowrocket 中添加自己的节点或订阅。
@@ -85,15 +110,17 @@ https://raw.githubusercontent.com/evanwy0223/evan-shadowrocket-config/main/Evan-
 
 检查 `💬 国内核心` 是否为 `DIRECT`，并确认全局路由为「配置」。不要把整个 ByteDance 规则集设置为直连。
 
+京东 App 依赖 `dns.jd.com` 提供的自有 HttpDNS。配置已在 BlockHttpDNS 规则集之前为该域名增加直连例外；不要为了京东长期把整个 `🧱 DNS 防泄露` 切换为 `DIRECT`。
+
 ### 邮件客户端无法收发邮件
 
 默认先使用 `DIRECT`。如果当前网络无法直连海外邮件服务器，可把 `✉️ 邮件服务` 临时切换为 `🚀 节点选择` 或 `PROXY`。
 
 ## 更新原则
 
-配置中的原作者 `update-url` 已被注释，因此不会自动用上游完整配置覆盖本版本。远程 `RULE-SET` 仍会从 LingJingMaster 和 blackmatrix7 的仓库获取规则。
+配置中的 `update-url` 已指向本仓库，不会自动使用 LingJingMaster 的完整配置覆盖本版本。远程 `RULE-SET` 仍会从 LingJingMaster 和 blackmatrix7 的仓库获取规则。
 
-更新本仓库后，在 Shadowrocket 的配置列表中重新下载配置即可。重新导入可能会重置部分策略组的手动选择，更新后请检查美国固定、香港固定和 Google 服务。
+更新本仓库后，在 Shadowrocket 的配置详情中执行「更新配置」即可。远程更新可能会重置部分策略组的手动选择，更新后请检查美国固定、香港固定和 Google 服务。
 
 ## 基础检查
 
@@ -102,7 +129,7 @@ https://raw.githubusercontent.com/evanwy0223/evan-shadowrocket-config/main/Evan-
 - 必需配置区块存在且没有重复。
 - 策略组名称与规则引用一致。
 - Mail、AppleMail 和 WeChat 远程规则引用存在。
-- 原作者 `update-url` 保持注释状态。
+- `update-url` 只指向本仓库的 Raw 配置地址。
 - 未引用整个 ByteDance 规则集。
 
 最终兼容性仍以 Shadowrocket 真机导入和实际网络测试为准。
