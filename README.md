@@ -2,7 +2,9 @@
 
 一份基于 [LingJingMaster/Shadowrocket-Rules](https://github.com/LingJingMaster/Shadowrocket-Rules) 定制的 Shadowrocket 分流配置。
 
-设计目标：AI 使用稳定出口，国内核心应用直连，普通海外服务自动选择节点，并保留原底版的 DNS、Apple、Host、URL Rewrite 和 MITM 行为。
+设计目标：已识别的中国大陆域名、目标 IP 和国内 App HTTPDNS 强制直连，AI 使用稳定出口，普通海外服务自动选择节点。
+
+2026-09-14 版本：包含 Telegram 修复及国内强制直连变更。静态检查已通过，更新后的手机导入与实际应用回归仍需验证。
 
 ## 直接导入
 
@@ -46,7 +48,7 @@ https://raw.githubusercontent.com/evanwy0223/evan-shadowrocket-config/main/Evan-
 3. 建议开启「更新提醒」。
 4. 在 iOS「设置 → 通用 → 后台 App 刷新」中允许 Shadowrocket。
 
-配置更新会用 GitHub 上的完整文件覆盖手机中的配置内容。更新后请检查美国固定、香港固定和 Google 服务；节点订阅本身仍由机场订阅单独更新。
+配置更新会用 GitHub 上的完整文件覆盖手机中的配置内容。更新后请检查美国固定、香港固定、Google 服务和电报消息；节点订阅本身仍由机场订阅单独更新。
 
 ## 首次设置
 
@@ -71,7 +73,7 @@ https://raw.githubusercontent.com/evanwy0223/evan-shadowrocket-config/main/Evan-
 | X / Twitter 及图片、视频 | `🇺🇸 美国固定` |
 | YouTube | `♻️ 自动选择` |
 | GitHub、GitLab、Atlassian、GitHub Copilot | `♻️ 自动选择` |
-| Telegram | `♻️ 自动选择` |
+| Telegram 文字、图片、视频 | `🇺🇸 美国固定` |
 | 京东及图片/CDN | `DIRECT` |
 | 微信、飞书、小红书、抖音、豆包 | `DIRECT` |
 | Apple、iCloud | `DIRECT` |
@@ -85,6 +87,12 @@ https://raw.githubusercontent.com/evanwy0223/evan-shadowrocket-config/main/Evan-
 
 ## 国内核心规则
 
+- China 域名规则与 `GEOIP,CN,DIRECT,no-resolve` 置于海外服务之前；国内业务规则直接指定 `DIRECT`，不依赖策略组保存的节点选择。
+- 原 BlockHttpDNS 列表改为 `DIRECT`，不再拦截其中的国内 App 自有 DNS；这是兼容性优先的选择，会放松这部分应用内 DNS 防泄露限制。
+- `💬 国内核心`、`🔒 国内服务` 仅保留 `DIRECT`，没有代理或拒绝选项。
+- 国内直连域名使用系统 DNS，解析失败不回退代理；General、IPv6、QUIC、Host、URL Rewrite 和 MITM 未修改。
+- “国内”指现有规则识别的中国大陆业务域名和大陆 IP，不包括港澳台服务；港股券商、香港银行仍保留原策略。
+- 未收录域名、使用海外 IP 的国内业务及共享 CDN 无法仅凭 GeoIP 保证识别，可能仍走海外兜底；必须结合手机连接日志补充精确规则。不要把整个 FINAL 改为 DIRECT。
 - 微信使用 blackmatrix7 的 WeChat 远程规则集。
 - Mail 和 Apple Mail 使用 blackmatrix7 的 Mail、AppleMail 远程规则集。
 - 飞书、小红书、抖音和豆包使用显式域名规则。
@@ -110,15 +118,21 @@ X 使用独立的 `🐦 X 服务`，覆盖 `x.com`、`twitter.com`、`twimg.com`
 
 如果以后当前美国固定节点变慢，可在 `🐦 X 服务` 中依次测试 `🇺🇸 美国自动` 或 `PROXY`，无需改变整个 `🌍 非中国` 策略。
 
+### Telegram 图片或视频加载慢
+
+Telegram 使用独立的 `📲 电报消息` 策略，默认走 `🇺🇸 美国固定`。2026-08-31 真机对比发现：全节点自动组选中 `[0.3]香港③` 时图片和视频明显较慢，切换到美国 `DMIT-VLESS-REALITY` 后明显变快。这说明普通 204 延迟最低不等于 Telegram 媒体线路吞吐最好。
+
+如果当前美国固定节点变慢，可在 `📲 电报消息` 中依次测试 `🇺🇸 美国自动`、`PROXY` 或其他地区自动组，不影响普通海外流量。
+
 ### 美国固定、香港固定或日本固定为空
 
 固定组通过节点名称中的地区关键词筛选。如果机场使用了不常见命名，需要在配置文件 `[Proxy Group]` 中补充对应的 `policy-regex-filter`。
 
 ### 国内 App 异常
 
-检查 `💬 国内核心` 是否为 `DIRECT`，并确认全局路由为「配置」。不要把整个 ByteDance 规则集设置为直连。
+确认全局路由为「配置」，而不是「代理」；全局代理模式会绕过本稿的国内直连规则。不要把整个 ByteDance 规则集设置为直连。
 
-京东 App 依赖 `dns.jd.com` 提供的自有 HttpDNS，并使用 `360buyimg.com`、`jdcdn.com`、`jcloudimg.com` 等图片/CDN域名。配置已在 BlockHttpDNS 和普通海外规则之前加入京东完整规则集，统一进入 `💬 国内核心 → DIRECT`；不要为了京东长期把整个 `🧱 DNS 防泄露` 切换为 `DIRECT`。
+国内域名、IP 与 HTTPDNS 已改为强制直连，但这不代表所有 App 断网已修复。如果某个 App 仍断网，先在连接日志确认实际请求使用 `DIRECT`、命中规则及失败原因；未识别的国内业务需补规则，已直连仍失败则检查本地网络或 App 服务，不再盲目调整代理节点。
 
 ### 邮件客户端无法收发邮件
 
@@ -128,7 +142,7 @@ X 使用独立的 `🐦 X 服务`，覆盖 `x.com`、`twitter.com`、`twimg.com`
 
 配置中的 `update-url` 已指向本仓库，不会自动使用 LingJingMaster 的完整配置覆盖本版本。远程 `RULE-SET` 仍会从 LingJingMaster 和 blackmatrix7 的仓库获取规则。
 
-更新本仓库后，在 Shadowrocket 的配置详情中执行「更新配置」即可。远程更新可能会重置部分策略组的手动选择，更新后请检查美国固定、香港固定和 Google 服务。
+更新本仓库后，在 Shadowrocket 的配置详情中执行「更新配置」即可。远程更新可能会重置部分策略组的手动选择，更新后请检查美国固定、香港固定、Google 服务和电报消息。
 
 ## 基础检查
 
