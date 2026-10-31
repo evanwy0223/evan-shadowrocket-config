@@ -6,6 +6,10 @@
 
 2026-09-14 版本：包含 Telegram 修复及国内强制直连变更。静态检查已通过，更新后的手机导入与实际应用回归仍需验证。
 
+2026-10-31 更新：开启 `ipv6 = true` 和 `prefer-ipv6 = true`，即启用并优先使用 IPv6，并非仅允许 IPv6。已有远程配置可在当前配置详情中选择「更新配置」获取，无需更换订阅地址。
+
+客户端设置不能保证代理服务器以 IPv6 出站，仍取决于节点协议、服务端配置及网络支持，必要时需服务端配合。手机端导入及 Google 实际访问尚未验证；更新后可关闭再打开 VPN，并检查连接日志与实际访问结果。
+
 ## 直接导入
 
 配置地址：
@@ -90,7 +94,7 @@ https://raw.githubusercontent.com/evanwy0223/evan-shadowrocket-config/main/Evan-
 - China 域名规则与 `GEOIP,CN,DIRECT,no-resolve` 置于海外服务之前；国内业务规则直接指定 `DIRECT`，不依赖策略组保存的节点选择。
 - 原 BlockHttpDNS 列表改为 `DIRECT`，不再拦截其中的国内 App 自有 DNS；这是兼容性优先的选择，会放松这部分应用内 DNS 防泄露限制。
 - `💬 国内核心`、`🔒 国内服务` 仅保留 `DIRECT`，没有代理或拒绝选项。
-- 国内直连域名使用系统 DNS，解析失败不回退代理；General、IPv6、QUIC、Host、URL Rewrite 和 MITM 未修改。
+- 国内直连域名使用系统 DNS，解析失败不回退代理；2026-09-14 的国内分流调整未修改 General、IPv6、QUIC、Host、URL Rewrite 和 MITM。本次仅开启 General 中的 IPv6 与优先 IPv6，其余设置不变。
 - “国内”指现有规则识别的中国大陆业务域名和大陆 IP，不包括港澳台服务；港股券商、香港银行仍保留原策略。
 - 未收录域名、使用海外 IP 的国内业务及共享 CDN 无法仅凭 GeoIP 保证识别，可能仍走海外兜底；必须结合手机连接日志补充精确规则。不要把整个 FINAL 改为 DIRECT。
 - 微信使用 blackmatrix7 的 WeChat 远程规则集。
